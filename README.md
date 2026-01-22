@@ -90,9 +90,8 @@ To make model quality easier to compare, we convert perplexity into a **bounded 
 1. Compute **perplexity** for the model outputs
 2. Convert perplexity to fluency using a **logistic function**
 
-[
-\text{Fluency} = \frac{1}{1 + \exp\left(0.1 \cdot (\text{Perplexity} - 30)\right)}
-]
+Fluency = 1 / (1 + exp(0.1 * (Perplexity - 30)))
+
 
 * Centered around **perplexity = 30** (rough “acceptable” quality)
 * Output is compressed into **[0, 1]**
