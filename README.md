@@ -5,6 +5,9 @@ These metrics help measure **fluency, accuracy, similarity, coverage, and semant
 
 ---
 
+<img width="1027" height="793" alt="image" src="https://github.com/user-attachments/assets/eea55cb0-b620-4f1f-8c42-4b532d6fc20f" />
+
+
 ## 🔹 1. Perplexity
 
 ### 📌 What is Perplexity?
