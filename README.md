@@ -1,8 +1,3 @@
-Below is a **clean, GitHub-ready `README.md` version** of your content.
-You can **directly copy–paste** this into your `readme.md` file.
-
----
-
 # 📊 LLM Evaluation Metrics
 
 This document explains the **most commonly used evaluation metrics for Large Language Models (LLMs)**.
@@ -203,11 +198,3 @@ Unlike BLEU or ROUGE, BERTScore:
 | **BERTScore**  | Semantics  | Modern GenAI tasks |
 
 ---
-
-If you want:
-
-* a **shorter README**
-* **interview-ready notes**
-* or **code examples for each metric**
-
-tell me 👍
