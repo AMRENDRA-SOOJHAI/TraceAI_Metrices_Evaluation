@@ -7,55 +7,49 @@ These metrics help measure **fluency, accuracy, similarity, coverage, and semant
 
 <img width="1027" height="793" alt="image" src="https://github.com/user-attachments/assets/eea55cb0-b620-4f1f-8c42-4b532d6fc20f" />
 
-
 ## 🔹 1. Perplexity
 
 ### 📌 What is Perplexity?
 
-Perplexity measures **how confused a language model is when predicting text**.
+Perplexity measures **how confused a language model is when predicting the next token**.
 
 **In simple terms:**
-Perplexity tells you **how many choices, on average, the model thinks it has for the next word**.
+It tells you **how many choices, on average, the model thinks it has for the next word**.
 
 ---
 
 ### 🔍 Interpretation
 
-* **Low Perplexity** → Model is confident & predictable
-* **High Perplexity** → Model is uncertain & confused
+| Perplexity Range | Meaning                          |
+| ---------------- | -------------------------------- |
+| **1 – 10**       | Excellent language modeling      |
+| **10 – 50**      | Reasonable fluency               |
+| **50 – 100+**    | Poor prediction / high confusion |
 
-| Perplexity Value | Interpretation              |
-| ---------------- | --------------------------- |
-| **1 – 10**       | Excellent language modeling |
-| **10 – 50**      | Reasonable fluency          |
-| **50 – 100+**    | Poor prediction             |
+* **Low perplexity** → Model is confident
+* **High perplexity** → Model is uncertain
 
 ---
 
 ### 🧮 Formula
 
-```math
-Perplexity = exp\left(-\frac{1}{N} \sum_{i=1}^{N} \log P(w_i)\right)
+```text
+Perplexity = exp( - (1 / N) * Σ log P(w_i) )
 ```
 
 **Where:**
 
-* `N` = Total number of tokens
+* `N` = total number of tokens
 * `w_i` = i-th token
-* `P(w_i)` = Probability assigned to token `w_i`
+* `P(w_i)` = probability assigned to the correct token
 
 ---
 
 ### ✅ Key Insight
 
-Perplexity is the **exponential of the average negative log-probability** assigned to the correct next tokens.
+Perplexity is the **exponential of the average negative log-probability**.
 
-➡️ **Lower perplexity = better language understanding**
-
----
-
-Below is a **clean, README-ready Markdown section**.
-You can **directly copy–paste** this into your `README.md` without any changes.
+➡️ **Lower perplexity = better language modeling ability**
 
 ---
 
@@ -63,52 +57,47 @@ You can **directly copy–paste** this into your `README.md` without any changes
 
 ### 📌 What is Fluency?
 
-**Fluency** measures how natural, readable, and grammatically correct a model’s output feels to humans.
+Fluency measures **how natural, readable, and grammatically correct** a model’s output feels to humans.
 
-In this project, fluency is **automatically derived from perplexity**, mapping a raw perplexity value to an intuitive **0–1 score**.
+In this project, fluency is **derived from perplexity** and normalized into a **0–1 score**.
 
-* **High Fluency (≈ 1.0)** → Text is smooth, natural, and easy to read
-* **Low Fluency (≈ 0.0)** → Text is awkward, broken, or hard to follow
+* **Fluency ≈ 1.0** → Smooth, natural text
+* **Fluency ≈ 0.0** → Awkward or broken text
 
 ---
 
 ### 🔁 Perplexity → Fluency Mapping
 
-Perplexity is **unbounded** and difficult to interpret directly.
-To make model quality easier to compare, we convert perplexity into a **bounded fluency score (0–1)**.
-
-**Intuition:**
-
-* **Very low perplexity (≤ 10)** → Model is very confident → fluency ≈ **1.0**
-* **Moderate perplexity (10–50)** → Reasonable language quality → fluency in the **mid-range**
-* **High perplexity (≥ 100)** → Model is confused → fluency ≈ **0.0**
+| Perplexity Level | Expected Fluency    |
+| ---------------- | ------------------- |
+| ≤ 10             | ≈ 1.0 (Very fluent) |
+| 10 – 50          | Mid-range fluency   |
+| ≥ 100            | ≈ 0.0 (Disfluent)   |
 
 ---
 
 ### 🧮 Fluency Formula (Project Definition)
 
-1. Compute **perplexity** for the model outputs
-2. Convert perplexity to fluency using a **logistic function**
-
+```text
 Fluency = 1 / (1 + exp(0.1 * (Perplexity - 30)))
+```
 
-
-* Centered around **perplexity = 30** (rough “acceptable” quality)
-* Output is compressed into **[0, 1]**
+* Centered around **Perplexity = 30** (acceptable quality)
+* Output is bounded between **0 and 1**
 * **Higher score = more fluent text**
 
-> ⚠️ This transformation is a **design choice specific to this project**, allowing clean comparison of different models using only perplexity.
+> ⚠️ This is a **project-specific design choice** to make perplexity easier to compare across models.
 
 ---
 
 ### 📊 Example Interpretation
 
-| Perplexity | Approx. Fluency | Interpretation                    |
-| ---------: | --------------: | --------------------------------- |
-|          5 |          ≈ 0.97 | Extremely fluent, very natural    |
-|         20 |          ≈ 0.73 | Good fluency                      |
-|         40 |          ≈ 0.27 | Noticeable issues in wording      |
-|         80 |          ≈ 0.05 | Highly disfluent / unnatural text |
+| Perplexity | Approx. Fluency | Interpretation            |
+| ---------- | --------------- | ------------------------- |
+| 5          | ≈ 0.97          | Extremely fluent          |
+| 20         | ≈ 0.73          | Good fluency              |
+| 40         | ≈ 0.27          | Noticeable wording issues |
+| 80         | ≈ 0.05          | Highly disfluent          |
 
 ---
 
@@ -116,53 +105,53 @@ Fluency = 1 / (1 + exp(0.1 * (Perplexity - 30)))
 
 ### 📌 What is BLEU?
 
-BLEU measures **how similar a generated text is to a reference (correct) text**, based on **n-gram overlap**.
+BLEU measures **how similar a generated text is to a reference text**, using **n-gram overlap**.
 
 **In simple terms:**
-BLEU checks **how much the model’s output looks like a known good answer**.
+BLEU checks **how close the output is to a known correct answer**.
 
 ---
 
 ### 🧠 How BLEU Works
 
-BLEU evaluates **n-gram precision**:
+* Unigram → single words
+* Bigram → 2-word sequences
+* Trigram → 3-word sequences
 
-* **Unigram** → Single words
-* **Bigram** → 2-word sequences
-* **Trigram** → 3-word sequences
+BLEU focuses on **precision**, not recall.
 
 ---
 
 ### 📊 BLEU Score Interpretation
 
-| BLEU Score    | Meaning                 |
-| ------------- | ----------------------- |
-| **0.7 – 1.0** | Very close to reference |
-| **0.4 – 0.7** | Reasonably similar      |
-| **0.2 – 0.4** | Weak similarity         |
-| **< 0.2**     | Poor match              |
+| BLEU Score | Meaning                 |
+| ---------: | ----------------------- |
+|  0.7 – 1.0 | Very close to reference |
+|  0.4 – 0.7 | Reasonably similar      |
+|  0.2 – 0.4 | Weak similarity         |
+|      < 0.2 | Poor match              |
 
 ---
 
 ### 🧮 BLEU Formula
 
-```math
-BLEU = BP \cdot \exp\left(\sum_{n=1}^{N} w_n \log p_n\right)
+```text
+BLEU = BP * exp( Σ (w_n * log(p_n)) )
 ```
 
 **Where:**
 
 * `p_n` = n-gram precision
-* `w_n` = n-gram weight (usually uniform)
-* `BP` = Brevity Penalty
+* `w_n` = n-gram weight
+* `BP` = brevity penalty
 
 ---
 
-### ⚠️ Notes
+### ⚠️ Limitations
 
-* BLEU is **precision-focused**
-* Penalizes overly short outputs using **Brevity Penalty**
-* Less effective for paraphrasing or creative text
+* Precision-focused
+* Penalizes paraphrasing
+* Weak for creative or open-ended tasks
 
 ---
 
@@ -170,45 +159,40 @@ BLEU = BP \cdot \exp\left(\sum_{n=1}^{N} w_n \log p_n\right)
 
 ### 📌 What is ROUGE?
 
-ROUGE measures **overlap between generated text and reference text**, with a **focus on recall**.
+ROUGE measures **overlap between generated and reference text**, with a **focus on recall**.
 
-In GenAI tasks, **missing important information is worse than adding extra words** — ROUGE captures this.
+It answers:
+➡️ *Did the model cover the important information?*
 
 ---
 
-### 🔍 Types of ROUGE
+### 🔍 ROUGE Variants
 
-#### 🔸 ROUGE-N (n-gram overlap)
+#### 🔸 ROUGE-N (n-gram recall)
 
-Measures how many **n-grams from the reference** appear in the generated text.
-
-```math
-ROUGE\text{-}N = \frac{\text{Matching n-grams}}{\text{Total n-grams in reference}}
+```text
+ROUGE-N = Matching n-grams / Total reference n-grams
 ```
 
----
+#### 🔸 ROUGE-L
 
-#### 🔸 ROUGE-L (Longest Common Subsequence)
+* Based on **Longest Common Subsequence (LCS)**
+* Captures sentence structure
 
-* Measures the **longest common subsequence (LCS)**
-* Captures **sentence structure & fluency**
+#### 🔸 ROUGE-S
 
----
-
-#### 🔸 ROUGE-S (Skip-Bigram)
-
-* Matches word pairs allowing gaps
-* Useful for flexible phrasing (less common)
+* Skip-bigram matching
+* Allows gaps between words
 
 ---
 
 ### 📊 ROUGE Metrics
 
-| Metric        | Meaning                             |
-| ------------- | ----------------------------------- |
-| **Precision** | How much generated text is relevant |
-| **Recall**    | How much reference text is covered  |
-| **F1 Score**  | Balance between precision & recall  |
+| Metric    | Meaning                       |
+| --------- | ----------------------------- |
+| Precision | Generated content relevance   |
+| Recall    | Reference coverage            |
+| F1 Score  | Balance of precision & recall |
 
 ---
 
@@ -216,46 +200,52 @@ ROUGE\text{-}N = \frac{\text{Matching n-grams}}{\text{Total n-grams in reference
 
 ### 📌 What is BERTScore?
 
-BERTScore measures **semantic similarity** using **contextual embeddings** from pretrained transformer models
-(e.g., **BERT**, **RoBERTa**).
+BERTScore measures **semantic similarity** using **contextual embeddings** from transformer models (BERT, RoBERTa).
 
 ---
 
 ### 🚀 Why BERTScore?
 
-Unlike BLEU or ROUGE, BERTScore:
-
-* ✅ Does **not rely on exact word overlap**
-* ✅ Understands **meaning and paraphrases**
-* ✅ Works better for **modern LLM outputs**
+* ✅ Understands meaning, not just words
+* ✅ Handles paraphrases well
+* ✅ Better for modern LLM outputs
 
 ---
 
 ### 🧠 How It Works
 
-1. Encode tokens using contextual embeddings
-2. Match generated tokens with reference tokens
-3. Compute similarity using **cosine similarity**
+1. Encode tokens into embeddings
+2. Match tokens using cosine similarity
+3. Compute Precision, Recall, and F1
 
 ---
 
 ### 📊 BERTScore Outputs
 
-* **Precision** – Semantic relevance of generated text
-* **Recall** – Semantic coverage of reference text
-* **F1 Score** – Overall semantic similarity
+| Metric    | Meaning                     |
+| --------- | --------------------------- |
+| Precision | Semantic relevance          |
+| Recall    | Semantic coverage           |
+| F1        | Overall semantic similarity |
 
-✨ Two sentences with the same meaning but different words can still achieve a **high BERTScore**.
+---
+
+## 🧠 Metric Summary
+
+| Metric     | Measures            | Best Used For      |
+| ---------- | ------------------- | ------------------ |
+| Perplexity | Model confidence    | Language modeling  |
+| Fluency    | Readability         | Human-like quality |
+| BLEU       | Precision overlap   | Translation        |
+| ROUGE      | Recall overlap      | Summarization      |
+| BERTScore  | Semantic similarity | GenAI evaluation   |
 
 ---
 
-## 🧠 Summary Comparison
+If you want next:
 
-| Metric         | Focus      | Best For           |
-| -------------- | ---------- | ------------------ |
-| **Perplexity** | Confidence | Language modeling  |
-| **BLEU**       | Precision  | Translation        |
-| **ROUGE**      | Recall     | Summarization      |
-| **BERTScore**  | Semantics  | Modern GenAI tasks |
+* 🧪 **Add a “Dummy Model vs Real Model” explanation**
+* 📈 **Add sample outputs from your pipeline**
+* 🏗 **Convert this into a research-paper style README**
 
----
+Just say 👍
